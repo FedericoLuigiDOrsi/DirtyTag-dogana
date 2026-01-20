@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🛃 Dogana Import — DirtyTag Photo QC v7</title>
+    <title>🔧 DEBUG — Dogana Import</title>
     <style>
         :root {
             --bg-dark: #1a1a2e;
             --bg-card: #16213e;
             --bg-input: #0f3460;
             --accent: #e94560;
-            --accent-hover: #ff6b6b;
             --success: #00d26a;
             --warning: #ffc107;
             --text: #eee;
@@ -25,1431 +24,726 @@
             background: var(--bg-dark);
             color: var(--text);
             min-height: 100vh;
-        }
-        
-        /* Header */
-        .header {
-            background: var(--bg-card);
-            padding: 1rem 2rem;
-            border-bottom: 2px solid var(--accent);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        
-        .header h1 {
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .header h1 span { font-size: 1.8rem; }
-        
-        /* Stats Bar */
-        .stats-bar {
-            display: flex;
-            gap: 1.5rem;
-            font-size: 0.9rem;
-        }
-        
-        .stat {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .stat-value {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: var(--accent);
-        }
-        
-        .stat-label { color: var(--text-muted); }
-        
-        .stat.success .stat-value { color: var(--success); }
-        .stat.warning .stat-value { color: var(--warning); }
-        
-        /* Filters Section */
-        .filters-section {
-            background: var(--bg-card);
-            padding: 1rem 2rem;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-        
-        .filter-group label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
-        
-        .filter-group select, .filter-group input {
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            min-width: 150px;
-        }
-        
-        .filter-group select:focus, .filter-group input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-        
-        /* Pagination Controls */
-        .pagination {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-left: auto;
-        }
-        
-        .pagination button {
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .pagination button:hover:not(:disabled) {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
-        
-        .pagination button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .pagination .page-info {
-            padding: 0.5rem 1rem;
-            background: var(--bg-dark);
-            border-radius: 4px;
-            font-size: 0.85rem;
-        }
-        
-        /* Token Input */
-        .token-section {
             padding: 2rem;
-            text-align: center;
-            max-width: 500px;
-            margin: 2rem auto;
         }
         
-        .token-section input {
-            width: 100%;
-            padding: 1rem;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text);
-            border-radius: 4px;
-            margin: 1rem 0;
-            font-family: monospace;
-        }
+        h1 { margin-bottom: 1rem; }
+        h2 { margin: 1.5rem 0 1rem; color: var(--accent); }
+        h3 { margin: 1rem 0 0.5rem; color: var(--warning); }
         
-        .token-section button {
-            background: var(--accent);
-            border: none;
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.2s;
-        }
-        
-        .token-section button:hover { background: var(--accent-hover); }
-        
-        /* Main Content */
-        .main-content {
-            padding: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        /* Product Card */
-        .product-card {
+        .card {
             background: var(--bg-card);
             border-radius: 8px;
             padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .product-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
         }
         
-        .product-sku {
-            font-size: 1.5rem;
-            font-weight: bold;
-            font-family: monospace;
-        }
-        
-        .product-meta {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-        
-        .product-meta span {
-            background: var(--bg-input);
-            padding: 0.3rem 0.8rem;
-            border-radius: 4px;
-        }
-        
-        /* Photo Grid */
-        .photo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .photo-item {
-            position: relative;
-            aspect-ratio: 1;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: all 0.2s;
-        }
-        
-        .photo-item:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-        
-        .photo-item.selected-front { border-color: #00d26a; }
-        .photo-item.selected-back { border-color: #ffc107; }
-        
-        .photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .photo-label {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        
-        .photo-label.front { background: #00d26a; color: #000; }
-        .photo-label.back { background: #ffc107; color: #000; }
-        
-        .photo-filename {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0,0,0,0.8);
-            padding: 0.3rem;
-            font-size: 0.7rem;
-            text-align: center;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        /* Selection Controls */
-        .selection-controls {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .control-group {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .control-group label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-        
-        .control-group select {
+        input, select {
             background: var(--bg-input);
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 0.5rem;
+            padding: 0.8rem 1rem;
             border-radius: 4px;
+            font-size: 1rem;
+            width: 100%;
+            margin: 0.5rem 0;
         }
         
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 0.8rem 1.5rem;
+        button {
+            background: var(--accent);
             border: none;
+            color: white;
+            padding: 0.8rem 1.5rem;
             border-radius: 4px;
             cursor: pointer;
             font-size: 1rem;
-            font-weight: 500;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
         }
         
-        .btn-primary {
-            background: var(--success);
-            color: #000;
-        }
+        button:hover { opacity: 0.9; }
+        button.secondary { background: var(--bg-input); border: 1px solid var(--border); }
+        button.success { background: var(--success); color: #000; }
         
-        .btn-primary:hover { background: #00ff7f; }
-        
-        .btn-primary:disabled {
-            background: #555;
-            color: #888;
-            cursor: not-allowed;
-        }
-        
-        .btn-danger {
-            background: var(--accent);
-            color: white;
-        }
-        
-        .btn-danger:hover { background: var(--accent-hover); }
-        
-        .btn-secondary {
-            background: var(--bg-input);
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-        
-        .btn-secondary:hover { border-color: var(--accent); }
-        
-        /* Skip Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .modal-overlay.active { display: flex; }
-        
-        .modal {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .modal h2 {
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .skip-reasons {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .skip-reason {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 1rem;
-            background: var(--bg-input);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 2px solid transparent;
-        }
-        
-        .skip-reason:hover { border-color: var(--accent); }
-        .skip-reason.selected { border-color: var(--accent); background: rgba(233,69,96,0.2); }
-        
-        .skip-reason input[type="radio"] { display: none; }
-        
-        .skip-reason .radio-custom {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--border);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .skip-reason.selected .radio-custom {
-            border-color: var(--accent);
-        }
-        
-        .skip-reason.selected .radio-custom::after {
-            content: '';
-            width: 10px;
-            height: 10px;
-            background: var(--accent);
-            border-radius: 50%;
-        }
-        
-        .skip-notes {
-            width: 100%;
-            min-height: 80px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 1rem;
+        .log {
+            background: #000;
             border-radius: 4px;
-            margin-bottom: 1.5rem;
-            resize: vertical;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
         }
         
-        .modal-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
+        .log-entry { margin: 0.3rem 0; }
+        .log-info { color: #4fc3f7; }
+        .log-success { color: #81c784; }
+        .log-error { color: #e57373; }
+        .log-warn { color: #ffb74d; }
+        .log-data { color: #ce93d8; }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin: 0.2rem;
+        }
+        .status-ok { background: var(--success); color: #000; }
+        .status-error { background: var(--accent); }
+        .status-pending { background: var(--warning); color: #000; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
         }
         
-        /* Image Modal (Zoom) */
-        .zoom-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.95);
-            z-index: 1001;
-            justify-content: center;
-            align-items: center;
-            cursor: zoom-out;
+        th, td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
         }
         
-        .zoom-modal.active { display: flex; }
+        th { color: var(--accent); }
         
-        .zoom-modal img {
-            max-width: 95%;
-            max-height: 95%;
-            object-fit: contain;
-        }
-        
-        /* Loading State */
-        .loading {
-            text-align: center;
-            padding: 4rem;
-            color: var(--text-muted);
-        }
-        
-        .loading .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 4rem;
-            color: var(--text-muted);
-        }
-        
-        .empty-state h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: var(--text);
-        }
-        
-        /* Keyboard Hints */
-        .keyboard-hints {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 1rem;
-        }
-        
-        .keyboard-hints kbd {
+        code {
             background: var(--bg-input);
             padding: 0.2rem 0.5rem;
-            border-radius: 4px;
+            border-radius: 3px;
             font-family: monospace;
         }
         
-        /* Toast Notifications */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--bg-card);
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            border-left: 4px solid var(--success);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            z-index: 1002;
-            transform: translateX(150%);
-            transition: transform 0.3s;
-        }
-        
-        .toast.show { transform: translateX(0); }
-        .toast.error { border-left-color: var(--accent); }
-        .toast.warning { border-left-color: var(--warning); }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header { flex-direction: column; text-align: center; }
-            .filters-section { justify-content: center; }
-            .pagination { margin-left: 0; margin-top: 1rem; }
-            .photo-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
-        }
+        .flex { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
     </style>
 </head>
 <body>
-    <!-- Token Section (shown first) -->
-    <div id="tokenSection" class="token-section">
-        <h1>🛃 Dogana Import</h1>
-        <p>Inserisci il tuo Airtable Personal Access Token per iniziare</p>
-        <input type="password" id="tokenInput" placeholder="pat_xxxxxxxxxxxxx">
-        <br>
-        <button onclick="saveToken()">Accedi</button>
-    </div>
-
-    <!-- Main App (hidden until authenticated) -->
-    <div id="mainApp" style="display: none;">
-        <!-- Header -->
-        <header class="header">
-            <h1><span>🛃</span> Dogana Import</h1>
-            <div class="stats-bar">
-                <div class="stat">
-                    <span class="stat-value" id="statTotal">-</span>
-                    <span class="stat-label">Totale</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-value" id="statLoaded">-</span>
-                    <span class="stat-label">Caricati</span>
-                </div>
-                <div class="stat success">
-                    <span class="stat-value" id="statDone">-</span>
-                    <span class="stat-label">Completati</span>
-                </div>
-                <div class="stat warning">
-                    <span class="stat-value" id="statSkipped">-</span>
-                    <span class="stat-label">Scartati</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- Filters -->
-        <div class="filters-section">
-            <div class="filter-group">
-                <label>Categoria</label>
-                <select id="filterCategory">
-                    <option value="">Tutte</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Brand</label>
-                <select id="filterBrand">
-                    <option value="">Tutti</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Stato</label>
-                <select id="filterStatus">
-                    <option value="NEEDS_REVIEW">Solo da Revisionare</option>
-                    <option value="">Tutti gli stati</option>
-                    <option value="NOT_AUDITED">Non Auditati</option>
-                    <option value="MISSING">Foto Mancanti</option>
-                    <option value="SKIPPED">Scartati</option>
-                </select>
-            </div>
-            <button class="btn btn-secondary" onclick="applyFilters()">🔍 Applica Filtri</button>
-            
-            <div class="pagination">
-                <button id="btnPrevPage" onclick="prevPage()" disabled>◀ Precedenti</button>
-                <span class="page-info" id="pageInfo">Pagina 1</span>
-                <button id="btnNextPage" onclick="nextPage()">Prossimi ▶</button>
-                <button class="btn btn-secondary" onclick="loadData()">🔄</button>
-            </div>
+    <h1>🔧 Debug Console — Dogana Import v7</h1>
+    
+    <!-- Step 1: Token -->
+    <div class="card">
+        <h2>Step 1: Configurazione Token</h2>
+        <div class="flex">
+            <input type="password" id="tokenInput" placeholder="pat_xxxxxxxxxxxxx" style="flex: 1;">
+            <button onclick="saveToken()">💾 Salva Token</button>
+            <button class="secondary" onclick="clearToken()">🗑️ Cancella</button>
         </div>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <div id="loadingState" class="loading">
-                <div class="spinner"></div>
-                <p>Caricamento in corso...</p>
-            </div>
-            
-            <div id="emptyState" class="empty-state" style="display: none;">
-                <h3>🎉 Nessun prodotto da revisionare</h3>
-                <p>Tutti i prodotti con i filtri selezionati sono stati processati.</p>
-            </div>
-            
-            <div id="productContainer"></div>
-        </main>
+        <p style="margin-top: 0.5rem; color: var(--text-muted);">
+            Token salvato: <span id="tokenStatus">-</span>
+        </p>
     </div>
-
-    <!-- Skip Modal -->
-    <div class="modal-overlay" id="skipModal">
-        <div class="modal">
-            <h2>❌ Scarta Prodotto</h2>
-            <p style="margin-bottom: 1rem; color: var(--text-muted);">
-                SKU: <strong id="skipModalSku"></strong>
-            </p>
-            <p style="margin-bottom: 1rem;">Seleziona il motivo dello scarto:</p>
-            
-            <div class="skip-reasons">
-                <label class="skip-reason" onclick="selectSkipReason(this, 'TOO_FEW_PHOTOS')">
-                    <input type="radio" name="skipReason" value="TOO_FEW_PHOTOS">
-                    <span class="radio-custom"></span>
-                    <span>📷 Troppe poche foto</span>
-                </label>
-                <label class="skip-reason" onclick="selectSkipReason(this, 'NO_INTERNAL_LABELS')">
-                    <input type="radio" name="skipReason" value="NO_INTERNAL_LABELS">
-                    <span class="radio-custom"></span>
-                    <span>🏷️ No etichette interne</span>
-                </label>
-                <label class="skip-reason" onclick="selectSkipReason(this, 'LOW_QUALITY_PHOTOS')">
-                    <input type="radio" name="skipReason" value="LOW_QUALITY_PHOTOS">
-                    <span class="radio-custom"></span>
-                    <span>📸 Foto di bassa qualità / da rifare</span>
-                </label>
-                <label class="skip-reason" onclick="selectSkipReason(this, 'MISSING_FRONT_BACK')">
-                    <input type="radio" name="skipReason" value="MISSING_FRONT_BACK">
-                    <span class="radio-custom"></span>
-                    <span>🔄 Front e/o Back mancante</span>
-                </label>
-                <label class="skip-reason" onclick="selectSkipReason(this, 'OTHER')">
-                    <input type="radio" name="skipReason" value="OTHER">
-                    <span class="radio-custom"></span>
-                    <span>📝 Altro (specifica nelle note)</span>
-                </label>
-            </div>
-            
-            <textarea class="skip-notes" id="skipNotes" placeholder="Note aggiuntive (opzionale)..."></textarea>
-            
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeSkipModal()">Annulla</button>
-                <button class="btn btn-danger" id="confirmSkipBtn" onclick="confirmSkip()" disabled>
-                    Conferma Scarto
-                </button>
-            </div>
+    
+    <!-- Step 2: Base Selection -->
+    <div class="card">
+        <h2>Step 2: Configurazione Base Airtable</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">Quale base vuoi usare?</p>
+        
+        <div class="flex">
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="radio" name="baseSelect" value="apptPbWnDkDkKEpFV" checked>
+                <span>DirtyTag 2.0 <code>apptPbWnDkDkKEpFV</code></span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="radio" name="baseSelect" value="apptD8GSxN3vhhivI">
+                <span>DirtyTag 3.0 <code>apptD8GSxN3vhhivI</code></span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="radio" name="baseSelect" value="custom">
+                <span>Custom:</span>
+            </label>
+            <input type="text" id="customBaseId" placeholder="appXXXXXXXXX" style="width: 200px;">
+        </div>
+        
+        <button onclick="testBaseConnection()" style="margin-top: 1rem;">🔌 Test Connessione Base</button>
+    </div>
+    
+    <!-- Step 3: Diagnostic Tests -->
+    <div class="card">
+        <h2>Step 3: Test Diagnostici</h2>
+        <div class="flex">
+            <button onclick="listTables()">📋 Lista Tabelle</button>
+            <button onclick="testOldInventory()">🗄️ Test OLD_INVENTORY</button>
+            <button onclick="testPhotoCandidates()">📷 Test PHOTO_CANDIDATES</button>
+            <button onclick="testAllFields()">🔍 Analizza Campi</button>
+            <button class="success" onclick="runFullDiagnostic()">🚀 Diagnostica Completa</button>
         </div>
     </div>
-
-    <!-- Zoom Modal -->
-    <div class="zoom-modal" id="zoomModal" onclick="closeZoomModal()">
-        <img id="zoomImage" src="" alt="Zoom">
+    
+    <!-- Step 4: Manual Query -->
+    <div class="card">
+        <h2>Step 4: Query Manuale</h2>
+        <div class="grid">
+            <div>
+                <label>Table ID:</label>
+                <input type="text" id="queryTableId" placeholder="tblXXXXXXXXX">
+            </div>
+            <div>
+                <label>Filter Formula (opzionale):</label>
+                <input type="text" id="queryFilter" placeholder="{Status}='Active'">
+            </div>
+        </div>
+        <div class="flex" style="margin-top: 1rem;">
+            <button onclick="runManualQuery()">▶️ Esegui Query</button>
+            <button class="secondary" onclick="runManualQuery(true)">📊 Solo Conteggio</button>
+        </div>
     </div>
-
-    <!-- Toast -->
-    <div class="toast" id="toast"></div>
+    
+    <!-- Results Panel -->
+    <div class="card">
+        <h2>📊 Risultati</h2>
+        <div id="resultsPanel">
+            <p style="color: var(--text-muted);">Esegui un test per vedere i risultati...</p>
+        </div>
+    </div>
+    
+    <!-- Log Panel -->
+    <div class="card">
+        <div class="flex" style="justify-content: space-between;">
+            <h2 style="margin: 0;">📜 Log Console</h2>
+            <button class="secondary" onclick="clearLog()">🗑️ Pulisci Log</button>
+        </div>
+        <div class="log" id="logPanel"></div>
+    </div>
 
     <script>
-        // ============================================
-        // CONFIGURATION
-        // ============================================
-        const BASE_ID = 'apptPbWnDkDkKEpFV';  // DirtyTag 2.0
-        const OLD_INVENTORY_TABLE = 'tblddAcLcQAyk050u';
-        const PHOTO_CANDIDATES_TABLE = 'tbl7ogfLnHsVfFdzb';
-        const PAGE_SIZE = 400;
-
         // ============================================
         // STATE
         // ============================================
         let token = localStorage.getItem('airtable_token') || '';
-        let allRecords = [];
-        let filteredRecords = [];
-        let currentPage = 0;
-        let currentSKU = null;
-        let currentRecordId = null;
-        let currentPhotos = [];
-        let selectedFront = null;
-        let selectedBack = null;
-        let selectedSkipReason = null;
-        let categories = new Set();
-        let brands = new Set();
-        let hoveredPhotoId = null;
-
-        // Stats
-        let stats = {
-            total: 0,
-            loaded: 0,
-            done: 0,
-            skipped: 0
+        let baseId = 'apptPbWnDkDkKEpFV';
+        
+        // Known table IDs (from documentation)
+        const KNOWN_TABLES = {
+            'DirtyTag 2.0': {
+                baseId: 'apptPbWnDkDkKEpFV',
+                tables: {
+                    'OLD_INVENTORY': null,  // Unknown - need to discover
+                    'PHOTO_CANDIDATES': 'tbl7ogfLnHsVfFdzb'
+                }
+            },
+            'DirtyTag 3.0': {
+                baseId: 'apptD8GSxN3vhhivI',
+                tables: {
+                    'INVENTARIO': 'tblddAcLcQAyk050u',
+                    'RAW': 'tblUWMOM3HKCCEwu6',
+                    'CONTABILITÀ': 'tblaTinKaG2gUGypa'
+                }
+            }
         };
-
+        
         // ============================================
-        // INITIALIZATION
+        // INIT
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
+            updateTokenStatus();
             if (token) {
-                showMainApp();
-                loadData();
+                document.getElementById('tokenInput').value = token;
             }
-            
-            // Keyboard shortcuts
-            document.addEventListener('keydown', handleKeyboard);
+            log('info', '🚀 Debug console inizializzata');
+            log('info', `📦 Token in localStorage: ${token ? 'SÌ (' + token.substring(0,15) + '...)' : 'NO'}`);
         });
-
+        
+        // ============================================
+        // TOKEN MANAGEMENT
+        // ============================================
         function saveToken() {
-            token = document.getElementById('tokenInput').value.trim();
-            if (!token) {
-                showToast('Inserisci un token valido', 'error');
+            const input = document.getElementById('tokenInput').value.trim();
+            if (!input) {
+                log('error', '❌ Token vuoto');
                 return;
             }
+            if (!input.startsWith('pat')) {
+                log('warn', '⚠️ Il token dovrebbe iniziare con "pat" - procedo comunque');
+            }
+            token = input;
             localStorage.setItem('airtable_token', token);
-            showMainApp();
-            loadData();
+            updateTokenStatus();
+            log('success', '✅ Token salvato: ' + token.substring(0, 20) + '...');
         }
-
-        function showMainApp() {
-            document.getElementById('tokenSection').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
+        
+        function clearToken() {
+            localStorage.removeItem('airtable_token');
+            token = '';
+            document.getElementById('tokenInput').value = '';
+            updateTokenStatus();
+            log('info', '🗑️ Token cancellato');
         }
-
-        // ============================================
-        // DATA LOADING
-        // ============================================
-        async function loadData() {
-            showLoading(true);
-            
-            try {
-                // First, get total count and unique values for filters
-                await loadFilterOptions();
-                
-                // Then load current page
-                await loadCurrentPage();
-                
-            } catch (error) {
-                console.error('Load error:', error);
-                showToast('Errore caricamento: ' + error.message, 'error');
-            }
-            
-            showLoading(false);
-        }
-
-        async function loadFilterOptions() {
-            // Get all records just for filter options (lightweight - only needed fields)
-            const filterFormula = `{Photo_Audit_Status}='NEEDS_REVIEW'`;
-            let offset = '';
-            categories = new Set();
-            brands = new Set();
-            stats.total = 0;
-            stats.done = 0;
-            stats.skipped = 0;
-            
-            // Count all statuses
-            const countFormula = `OR({Photo_Audit_Status}='NEEDS_REVIEW',{Photo_Audit_Status}='COMPLIANT',{Photo_Audit_Status}='SKIPPED',{Photo_Audit_Status}='MISSING')`;
-            
-            do {
-                const url = `https://api.airtable.com/v0/${BASE_ID}/${OLD_INVENTORY_TABLE}?` +
-                    `fields[]=SKU&fields[]=Category&fields[]=Brand&fields[]=Photo_Audit_Status` +
-                    `&filterByFormula=${encodeURIComponent(countFormula)}` +
-                    `&pageSize=100` +
-                    (offset ? `&offset=${offset}` : '');
-                
-                const response = await fetch(url, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                if (!response.ok) throw new Error('API Error: ' + response.status);
-                
-                const data = await response.json();
-                
-                data.records.forEach(r => {
-                    const cat = r.fields.Category;
-                    const brand = r.fields.Brand;
-                    const status = r.fields.Photo_Audit_Status;
-                    
-                    if (cat) categories.add(Array.isArray(cat) ? cat[0] : cat);
-                    if (brand) brands.add(Array.isArray(brand) ? brand[0] : brand);
-                    
-                    stats.total++;
-                    if (status === 'COMPLIANT') stats.done++;
-                    if (status === 'SKIPPED') stats.skipped++;
-                });
-                
-                offset = data.offset;
-            } while (offset);
-            
-            // Populate filter dropdowns
-            populateFilterDropdown('filterCategory', categories);
-            populateFilterDropdown('filterBrand', brands);
-            
-            updateStats();
-        }
-
-        function populateFilterDropdown(elementId, values) {
-            const select = document.getElementById(elementId);
-            const currentValue = select.value;
-            
-            // Keep first option
-            while (select.options.length > 1) {
-                select.remove(1);
-            }
-            
-            // Sort and add options
-            [...values].sort().forEach(val => {
-                const option = document.createElement('option');
-                option.value = val;
-                option.textContent = val;
-                select.appendChild(option);
-            });
-            
-            // Restore selection if still valid
-            if ([...values].includes(currentValue)) {
-                select.value = currentValue;
-            }
-        }
-
-        async function loadCurrentPage() {
-            const category = document.getElementById('filterCategory').value;
-            const brand = document.getElementById('filterBrand').value;
-            const status = document.getElementById('filterStatus').value || 'NEEDS_REVIEW';
-            
-            // Build filter formula
-            let conditions = [];
-            if (status) conditions.push(`{Photo_Audit_Status}='${status}'`);
-            if (category) conditions.push(`FIND('${category}', ARRAYJOIN({Category}, ','))`);
-            if (brand) conditions.push(`FIND('${brand}', ARRAYJOIN({Brand}, ','))`);
-            
-            const formula = conditions.length > 0 
-                ? (conditions.length === 1 ? conditions[0] : `AND(${conditions.join(',')})`)
-                : '';
-            
-            // Calculate offset for pagination
-            const offset = currentPage * PAGE_SIZE;
-            
-            let url = `https://api.airtable.com/v0/${BASE_ID}/${OLD_INVENTORY_TABLE}?` +
-                `fields[]=SKU&fields[]=Category&fields[]=Brand&fields[]=Photo_Audit_Status` +
-                `&fields[]=Photo_Count&fields[]=Confirmed_Front_FileId&fields[]=Confirmed_Back_FileId` +
-                `&pageSize=${PAGE_SIZE}`;
-            
-            if (formula) {
-                url += `&filterByFormula=${encodeURIComponent(formula)}`;
-            }
-            
-            // Note: Airtable doesn't support true offset, we need to paginate through
-            // For simplicity, we'll fetch up to the current page
-            let records = [];
-            let airtableOffset = '';
-            let pagesToSkip = currentPage;
-            let currentPageRecords = [];
-            
-            do {
-                const pageUrl = url + (airtableOffset ? `&offset=${airtableOffset}` : '');
-                const response = await fetch(pageUrl, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                if (!response.ok) throw new Error('API Error: ' + response.status);
-                
-                const data = await response.json();
-                
-                if (pagesToSkip > 0) {
-                    // Skip this page
-                    pagesToSkip--;
-                } else {
-                    // This is our target page
-                    currentPageRecords = data.records;
-                    break;
-                }
-                
-                airtableOffset = data.offset;
-            } while (airtableOffset && pagesToSkip >= 0);
-            
-            filteredRecords = currentPageRecords;
-            stats.loaded = (currentPage * PAGE_SIZE) + filteredRecords.length;
-            
-            updateStats();
-            updatePagination();
-            renderProducts();
-        }
-
-        function applyFilters() {
-            currentPage = 0;
-            loadCurrentPage();
-        }
-
-        function prevPage() {
-            if (currentPage > 0) {
-                currentPage--;
-                loadCurrentPage();
-            }
-        }
-
-        function nextPage() {
-            currentPage++;
-            loadCurrentPage();
-        }
-
-        function updatePagination() {
-            document.getElementById('btnPrevPage').disabled = currentPage === 0;
-            document.getElementById('btnNextPage').disabled = filteredRecords.length < PAGE_SIZE;
-            document.getElementById('pageInfo').textContent = `Pagina ${currentPage + 1}`;
-        }
-
-        function updateStats() {
-            document.getElementById('statTotal').textContent = stats.total;
-            document.getElementById('statLoaded').textContent = stats.loaded;
-            document.getElementById('statDone').textContent = stats.done;
-            document.getElementById('statSkipped').textContent = stats.skipped;
-        }
-
-        // ============================================
-        // RENDERING
-        // ============================================
-        function renderProducts() {
-            const container = document.getElementById('productContainer');
-            const emptyState = document.getElementById('emptyState');
-            
-            if (filteredRecords.length === 0) {
-                container.innerHTML = '';
-                emptyState.style.display = 'block';
-                return;
-            }
-            
-            emptyState.style.display = 'none';
-            
-            // Render first product that needs review
-            const record = filteredRecords[0];
-            currentRecordId = record.id;
-            currentSKU = record.fields.SKU;
-            
-            // Load photos for this SKU
-            loadPhotosForSKU(currentSKU);
-        }
-
-        async function loadPhotosForSKU(sku) {
-            const container = document.getElementById('productContainer');
-            const record = filteredRecords.find(r => r.fields.SKU === sku);
-            
-            if (!record) return;
-            
-            // Show loading state in card
-            container.innerHTML = `
-                <div class="product-card">
-                    <div class="product-header">
-                        <span class="product-sku">${sku}</span>
-                        <div class="product-meta">
-                            <span>📁 ${record.fields.Category || 'N/A'}</span>
-                            <span>🏷️ ${record.fields.Brand || 'N/A'}</span>
-                            <span>📷 ${record.fields.Photo_Count || '?'} foto</span>
-                        </div>
-                    </div>
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <p>Caricamento foto...</p>
-                    </div>
-                </div>
-            `;
-            
-            try {
-                // Fetch photos from PHOTO_CANDIDATES
-                const url = `https://api.airtable.com/v0/${BASE_ID}/${PHOTO_CANDIDATES_TABLE}?` +
-                    `filterByFormula=${encodeURIComponent(`{SKU}='${sku}'`)}` +
-                    `&fields[]=FileId&fields[]=Filename&fields[]=Is_Front&fields[]=Is_Back&fields[]=Review_Status`;
-                
-                const response = await fetch(url, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                if (!response.ok) throw new Error('API Error: ' + response.status);
-                
-                const data = await response.json();
-                currentPhotos = data.records;
-                
-                // Reset selections
-                selectedFront = null;
-                selectedBack = null;
-                
-                // Check if any are pre-selected
-                currentPhotos.forEach(p => {
-                    if (p.fields.Is_Front) selectedFront = p.id;
-                    if (p.fields.Is_Back) selectedBack = p.id;
-                });
-                
-                renderProductCard(record, currentPhotos);
-                
-            } catch (error) {
-                console.error('Error loading photos:', error);
-                showToast('Errore caricamento foto: ' + error.message, 'error');
-            }
-        }
-
-        function renderProductCard(record, photos) {
-            const container = document.getElementById('productContainer');
-            const sku = record.fields.SKU;
-            
-            const photosHtml = photos.map(p => {
-                const fileId = p.fields.FileId;
-                const filename = p.fields.Filename;
-                const thumbUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w400`;
-                const fullUrl = `https://drive.google.com/uc?id=${fileId}`;
-                
-                let labelHtml = '';
-                let selectedClass = '';
-                
-                if (p.id === selectedFront) {
-                    labelHtml = '<span class="photo-label front">FRONT</span>';
-                    selectedClass = 'selected-front';
-                } else if (p.id === selectedBack) {
-                    labelHtml = '<span class="photo-label back">BACK</span>';
-                    selectedClass = 'selected-back';
-                }
-                
-                return `
-                    <div class="photo-item ${selectedClass}" 
-                         data-id="${p.id}" 
-                         data-fileid="${fileId}"
-                         onclick="handlePhotoClick('${p.id}')"
-                         onmouseenter="hoveredPhotoId='${p.id}'"
-                         onmouseleave="hoveredPhotoId=null"
-                         ondblclick="openZoom('${fullUrl}')">
-                        ${labelHtml}
-                        <img src="${thumbUrl}" alt="${filename}" loading="lazy">
-                        <span class="photo-filename">${filename}</span>
-                    </div>
-                `;
-            }).join('');
-            
-            container.innerHTML = `
-                <div class="product-card">
-                    <div class="product-header">
-                        <span class="product-sku">${sku}</span>
-                        <div class="product-meta">
-                            <span>📁 ${record.fields.Category || 'N/A'}</span>
-                            <span>🏷️ ${record.fields.Brand || 'N/A'}</span>
-                            <span>📷 ${photos.length} foto</span>
-                        </div>
-                    </div>
-                    
-                    <div class="photo-grid">
-                        ${photosHtml || '<p style="color: var(--text-muted);">Nessuna foto disponibile</p>'}
-                    </div>
-                    
-                    <div class="selection-controls">
-                        <div class="control-group">
-                            <label>AI Mode:</label>
-                            <select id="aiModeSelect">
-                                <option value="MANI">MANI (Manichino)</option>
-                                <option value="FLAT">FLAT (Disteso)</option>
-                                <option value="WORN">WORN (Indossato)</option>
-                            </select>
-                        </div>
-                        <div class="control-group" id="templateGroup" style="display: none;">
-                            <label>Template:</label>
-                            <select id="templateSelect">
-                                <option value="default">Default</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="btn btn-primary" id="confirmBtn" onclick="confirmSelection()" disabled>
-                            ✅ Approva e Continua
-                        </button>
-                        <button class="btn btn-danger" onclick="openSkipModal()">
-                            ❌ Scarta
-                        </button>
-                        <button class="btn btn-secondary" onclick="skipToNext()">
-                            ⏭️ Salta (Dopo)
-                        </button>
-                    </div>
-                    
-                    <div class="keyboard-hints">
-                        <span><kbd>F</kbd> = Front</span>
-                        <span><kbd>B</kbd> = Back</span>
-                        <span><kbd>Enter</kbd> = Conferma</span>
-                        <span><kbd>S</kbd> = Scarta</span>
-                        <span><kbd>DblClick</kbd> = Zoom</span>
-                    </div>
-                </div>
-            `;
-            
-            // AI Mode change handler
-            document.getElementById('aiModeSelect').addEventListener('change', (e) => {
-                document.getElementById('templateGroup').style.display = 
-                    e.target.value === 'FLAT' ? 'flex' : 'none';
-            });
-            
-            updateConfirmButton();
-        }
-
-        // ============================================
-        // PHOTO SELECTION
-        // ============================================
-        function handlePhotoClick(photoId) {
-            // If no selection yet, prompt user
-            if (!selectedFront) {
-                setFront(photoId);
-            } else if (!selectedBack && photoId !== selectedFront) {
-                setBack(photoId);
-            } else if (photoId === selectedFront) {
-                // Clicking selected front deselects it
-                selectedFront = null;
-                rerenderPhotos();
-            } else if (photoId === selectedBack) {
-                // Clicking selected back deselects it
-                selectedBack = null;
-                rerenderPhotos();
+        
+        function updateTokenStatus() {
+            const el = document.getElementById('tokenStatus');
+            if (token && token.length > 10) {
+                el.innerHTML = `<span class="status-badge status-ok">✓ ${token.substring(0,15)}...</span>`;
             } else {
-                // Both selected, clicking another replaces based on last selection
-                // Default: replace front
-                setFront(photoId);
-            }
-            
-            updateConfirmButton();
-        }
-
-        function setFront(photoId) {
-            if (photoId === selectedBack) selectedBack = null;
-            selectedFront = photoId;
-            rerenderPhotos();
-            showToast('📷 FRONT selezionato', 'success');
-        }
-
-        function setBack(photoId) {
-            if (photoId === selectedFront) selectedFront = null;
-            selectedBack = photoId;
-            rerenderPhotos();
-            showToast('📷 BACK selezionato', 'success');
-        }
-
-        function rerenderPhotos() {
-            document.querySelectorAll('.photo-item').forEach(el => {
-                const id = el.dataset.id;
-                el.classList.remove('selected-front', 'selected-back');
-                el.querySelector('.photo-label')?.remove();
-                
-                if (id === selectedFront) {
-                    el.classList.add('selected-front');
-                    el.insertAdjacentHTML('afterbegin', '<span class="photo-label front">FRONT</span>');
-                } else if (id === selectedBack) {
-                    el.classList.add('selected-back');
-                    el.insertAdjacentHTML('afterbegin', '<span class="photo-label back">BACK</span>');
-                }
-            });
-            
-            updateConfirmButton();
-        }
-
-        function updateConfirmButton() {
-            const btn = document.getElementById('confirmBtn');
-            if (btn) {
-                btn.disabled = !(selectedFront && selectedBack);
+                el.innerHTML = `<span class="status-badge status-error">✗ Nessun token</span>`;
             }
         }
-
-        // ============================================
-        // CONFIRM SELECTION
-        // ============================================
-        async function confirmSelection() {
-            if (!selectedFront || !selectedBack) return;
-            
-            const btn = document.getElementById('confirmBtn');
-            btn.disabled = true;
-            btn.textContent = '⏳ Salvando...';
-            
-            try {
-                const frontPhoto = currentPhotos.find(p => p.id === selectedFront);
-                const backPhoto = currentPhotos.find(p => p.id === selectedBack);
-                const aiMode = document.getElementById('aiModeSelect').value;
-                const template = document.getElementById('templateSelect')?.value || 'N/A';
-                
-                // Update PHOTO_CANDIDATES - set Is_Front
-                await updateRecord(PHOTO_CANDIDATES_TABLE, selectedFront, {
-                    Is_Front: true,
-                    Review_Status: 'ASSIGNED'
-                });
-                
-                // Update PHOTO_CANDIDATES - set Is_Back
-                await updateRecord(PHOTO_CANDIDATES_TABLE, selectedBack, {
-                    Is_Back: true,
-                    Review_Status: 'ASSIGNED'
-                });
-                
-                // Update remaining photos as ASSIGNED
-                for (const photo of currentPhotos) {
-                    if (photo.id !== selectedFront && photo.id !== selectedBack) {
-                        await updateRecord(PHOTO_CANDIDATES_TABLE, photo.id, {
-                            Review_Status: 'ASSIGNED'
-                        });
-                    }
-                }
-                
-                // Update OLD_INVENTORY
-                await updateRecord(OLD_INVENTORY_TABLE, currentRecordId, {
-                    Confirmed_Front_FileId: frontPhoto.fields.FileId,
-                    Confirmed_Back_FileId: backPhoto.fields.FileId,
-                    Photo_Audit_Status: 'COMPLIANT',
-                    Migration_AI_Mode: aiMode,
-                    Migration_Template: aiMode === 'FLAT' ? template : '',
-                    Ready_To_Migrate: true
-                });
-                
-                stats.done++;
-                updateStats();
-                
-                showToast(`✅ ${currentSKU} approvato!`, 'success');
-                
-                // Load next
-                filteredRecords.shift();
-                if (filteredRecords.length === 0) {
-                    await loadCurrentPage();
-                } else {
-                    renderProducts();
-                }
-                
-            } catch (error) {
-                console.error('Confirm error:', error);
-                showToast('Errore: ' + error.message, 'error');
-                btn.disabled = false;
-                btn.textContent = '✅ Approva e Continua';
+        
+        function getSelectedBaseId() {
+            const selected = document.querySelector('input[name="baseSelect"]:checked').value;
+            if (selected === 'custom') {
+                return document.getElementById('customBaseId').value.trim();
             }
+            return selected;
         }
-
+        
         // ============================================
-        // SKIP FUNCTIONALITY
+        // API CALLS
         // ============================================
-        function openSkipModal() {
-            document.getElementById('skipModalSku').textContent = currentSKU;
-            document.getElementById('skipModal').classList.add('active');
-            selectedSkipReason = null;
-            document.querySelectorAll('.skip-reason').forEach(el => el.classList.remove('selected'));
-            document.getElementById('skipNotes').value = '';
-            document.getElementById('confirmSkipBtn').disabled = true;
-        }
-
-        function closeSkipModal() {
-            document.getElementById('skipModal').classList.remove('active');
-        }
-
-        function selectSkipReason(element, reason) {
-            document.querySelectorAll('.skip-reason').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
-            selectedSkipReason = reason;
-            document.getElementById('confirmSkipBtn').disabled = false;
-        }
-
-        async function confirmSkip() {
-            if (!selectedSkipReason) return;
-            
-            const btn = document.getElementById('confirmSkipBtn');
-            btn.disabled = true;
-            btn.textContent = '⏳ Scartando...';
-            
-            try {
-                const skipNotes = document.getElementById('skipNotes').value.trim();
-                
-                // 1. Delete all PHOTO_CANDIDATES for this SKU
-                for (const photo of currentPhotos) {
-                    await deleteRecord(PHOTO_CANDIDATES_TABLE, photo.id);
-                }
-                
-                // 2. NUKE RESET - Update OLD_INVENTORY
-                await updateRecord(OLD_INVENTORY_TABLE, currentRecordId, {
-                    // Reset photo selection
-                    Confirmed_Front_FileId: '',
-                    Confirmed_Back_FileId: '',
-                    
-                    // Reset migration config
-                    Migration_AI_Mode: null,
-                    Migration_Template: '',
-                    Migration_Notes: '',
-                    
-                    // Set skip status
-                    Photo_Audit_Status: 'SKIPPED',
-                    Migration_Status: 'NOT_MIGRATED',
-                    Ready_To_Migrate: false,
-                    
-                    // Skip tracking
-                    Skip_Reason: selectedSkipReason,
-                    Skip_Notes: skipNotes,
-                    Skipped_At: new Date().toISOString(),
-                    Requires_Reshoot: true
-                });
-                
-                stats.skipped++;
-                updateStats();
-                
-                closeSkipModal();
-                showToast(`❌ ${currentSKU} scartato - ${selectedSkipReason}`, 'warning');
-                
-                // Load next
-                filteredRecords.shift();
-                if (filteredRecords.length === 0) {
-                    await loadCurrentPage();
-                } else {
-                    renderProducts();
-                }
-                
-            } catch (error) {
-                console.error('Skip error:', error);
-                showToast('Errore: ' + error.message, 'error');
-                btn.disabled = false;
-                btn.textContent = 'Conferma Scarto';
+        async function apiCall(endpoint, options = {}) {
+            if (!token) {
+                throw new Error('Token non configurato');
             }
-        }
-
-        function skipToNext() {
-            // Just move to next without saving (temporary skip)
-            filteredRecords.push(filteredRecords.shift());
-            renderProducts();
-            showToast('⏭️ Saltato temporaneamente', 'info');
-        }
-
-        // ============================================
-        // API HELPERS
-        // ============================================
-        async function updateRecord(tableId, recordId, fields) {
-            const response = await fetch(`https://api.airtable.com/v0/${BASE_ID}/${tableId}/${recordId}`, {
-                method: 'PATCH',
+            
+            const url = `https://api.airtable.com/v0/${endpoint}`;
+            log('info', `🔗 API: ${url}`);
+            
+            const response = await fetch(url, {
+                ...options,
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ fields })
-            });
-            
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error?.message || 'Update failed');
-            }
-            
-            return response.json();
-        }
-
-        async function deleteRecord(tableId, recordId) {
-            const response = await fetch(`https://api.airtable.com/v0/${BASE_ID}/${tableId}/${recordId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Content-Type': 'application/json',
+                    ...options.headers
                 }
             });
             
+            const data = await response.json();
+            
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error?.message || 'Delete failed');
+                log('error', `❌ HTTP ${response.status}: ${JSON.stringify(data)}`);
+                throw new Error(`HTTP ${response.status}: ${data.error?.message || 'Unknown error'}`);
             }
             
-            return response.json();
+            return data;
         }
-
+        
         // ============================================
-        // KEYBOARD SHORTCUTS
+        // DIAGNOSTIC FUNCTIONS
         // ============================================
-        function handleKeyboard(e) {
-            // Ignore if typing in input
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        async function testBaseConnection() {
+            const base = getSelectedBaseId();
+            log('info', `🔌 Testing connessione a base: ${base}`);
             
-            switch (e.key.toLowerCase()) {
-                case 'f':
-                    if (hoveredPhotoId) {
-                        setFront(hoveredPhotoId);
-                    }
-                    break;
-                case 'b':
-                    if (hoveredPhotoId) {
-                        setBack(hoveredPhotoId);
-                    }
-                    break;
-                case 'enter':
-                    if (selectedFront && selectedBack) {
-                        confirmSelection();
-                    }
-                    break;
-                case 's':
-                    openSkipModal();
-                    break;
-                case 'escape':
-                    closeSkipModal();
-                    closeZoomModal();
-                    break;
+            try {
+                // Try to get base schema (requires meta API)
+                const url = `https://api.airtable.com/v0/meta/bases/${base}/tables`;
+                log('info', `📡 Fetching: ${url}`);
+                
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.status === 401) {
+                    log('error', '❌ 401 Unauthorized - Token non valido o scaduto');
+                    showResult('error', 'Token non valido', 'Verifica che il token sia corretto e non scaduto');
+                    return;
+                }
+                
+                if (response.status === 403) {
+                    log('warn', '⚠️ 403 Forbidden - Token non ha accesso alla Meta API');
+                    log('info', '💡 Provo con una query diretta alla base...');
+                    
+                    // Fallback: try a direct table query
+                    await testDirectQuery(base);
+                    return;
+                }
+                
+                if (response.status === 404) {
+                    log('error', `❌ 404 Not Found - Base ID "${base}" non esiste`);
+                    showResult('error', 'Base non trovata', `Il Base ID "${base}" non esiste o il token non ha accesso`);
+                    return;
+                }
+                
+                const data = await response.json();
+                log('success', `✅ Connessione OK! Trovate ${data.tables?.length || 0} tabelle`);
+                
+                // Display tables
+                displayTables(data.tables);
+                
+            } catch (error) {
+                log('error', `❌ Errore: ${error.message}`);
+                showResult('error', 'Errore connessione', error.message);
             }
         }
-
-        // ============================================
-        // ZOOM MODAL
-        // ============================================
-        function openZoom(url) {
-            document.getElementById('zoomImage').src = url;
-            document.getElementById('zoomModal').classList.add('active');
+        
+        async function testDirectQuery(base) {
+            // Try common table names
+            const testTables = ['OLD_INVENTORY', 'INVENTARIO', 'Inventory', 'Products'];
+            
+            for (const tableName of testTables) {
+                try {
+                    log('info', `🔍 Provo tabella: ${tableName}`);
+                    const url = `https://api.airtable.com/v0/${base}/${encodeURIComponent(tableName)}?maxRecords=1`;
+                    
+                    const response = await fetch(url, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        log('success', `✅ Tabella "${tableName}" trovata! ${data.records?.length || 0} record campione`);
+                        
+                        if (data.records?.length > 0) {
+                            log('data', `📋 Campi disponibili: ${Object.keys(data.records[0].fields).join(', ')}`);
+                        }
+                        
+                        showResult('success', 'Connessione OK', `Tabella "${tableName}" accessibile`);
+                        return;
+                    }
+                } catch (e) {
+                    // Continue to next table
+                }
+            }
+            
+            log('error', '❌ Nessuna tabella standard trovata');
+            showResult('error', 'Nessuna tabella trovata', 'Verifica il Base ID e i permessi del token');
         }
-
-        function closeZoomModal() {
-            document.getElementById('zoomModal').classList.remove('active');
+        
+        async function listTables() {
+            const base = getSelectedBaseId();
+            log('info', `📋 Listing tabelle per base: ${base}`);
+            
+            try {
+                const url = `https://api.airtable.com/v0/meta/bases/${base}/tables`;
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        log('warn', '⚠️ Meta API non accessibile - il token potrebbe non avere scope schema.bases:read');
+                        log('info', '💡 Prova ad aggiungere lo scope "schema.bases:read" al token');
+                    }
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                displayTables(data.tables);
+                
+            } catch (error) {
+                log('error', `❌ Errore: ${error.message}`);
+            }
         }
-
+        
+        function displayTables(tables) {
+            if (!tables || tables.length === 0) {
+                showResult('warn', 'Nessuna tabella', 'La base non contiene tabelle o non hai accesso');
+                return;
+            }
+            
+            let html = '<h3>Tabelle trovate:</h3><table><tr><th>Nome</th><th>ID</th><th>Campi</th></tr>';
+            
+            tables.forEach(t => {
+                const fieldCount = t.fields?.length || '?';
+                html += `<tr>
+                    <td><strong>${t.name}</strong></td>
+                    <td><code>${t.id}</code></td>
+                    <td>${fieldCount} campi</td>
+                </tr>`;
+                
+                log('data', `📁 ${t.name} (${t.id}) - ${fieldCount} campi`);
+            });
+            
+            html += '</table>';
+            
+            // Add field details
+            tables.forEach(t => {
+                if (t.fields?.length > 0) {
+                    html += `<h3>Campi di "${t.name}":</h3><table><tr><th>Nome</th><th>Tipo</th></tr>`;
+                    t.fields.forEach(f => {
+                        html += `<tr><td>${f.name}</td><td><code>${f.type}</code></td></tr>`;
+                    });
+                    html += '</table>';
+                }
+            });
+            
+            showResult('success', `${tables.length} tabelle trovate`, html, true);
+        }
+        
+        async function testOldInventory() {
+            const base = getSelectedBaseId();
+            log('info', `🗄️ Testing OLD_INVENTORY in base: ${base}`);
+            
+            // Try different possible table names/IDs
+            const possibilities = [
+                { name: 'OLD_INVENTORY', id: null },
+                { name: 'INVENTARIO', id: 'tblddAcLcQAyk050u' },
+                { name: 'Inventario', id: null },
+                { name: 'Products', id: null }
+            ];
+            
+            for (const p of possibilities) {
+                const tableRef = p.id || encodeURIComponent(p.name);
+                try {
+                    log('info', `🔍 Provo: ${p.name} (${tableRef})`);
+                    
+                    const url = `https://api.airtable.com/v0/${base}/${tableRef}?maxRecords=3`;
+                    const response = await fetch(url, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        log('success', `✅ "${p.name}" TROVATA!`);
+                        log('data', `   Records: ${data.records?.length || 0}`);
+                        
+                        if (data.records?.length > 0) {
+                            const fields = Object.keys(data.records[0].fields);
+                            log('data', `   Campi: ${fields.join(', ')}`);
+                            
+                            // Check for expected fields
+                            const expectedFields = ['SKU', 'Category', 'Brand', 'Photo_Audit_Status', 'Photo_Count'];
+                            const found = expectedFields.filter(f => fields.includes(f));
+                            const missing = expectedFields.filter(f => !fields.includes(f));
+                            
+                            log('info', `   ✓ Campi trovati: ${found.join(', ')}`);
+                            if (missing.length > 0) {
+                                log('warn', `   ⚠️ Campi mancanti: ${missing.join(', ')}`);
+                            }
+                            
+                            showResult('success', `Tabella "${p.name}" OK`, `
+                                <p><strong>Table ID:</strong> <code>${p.id || p.name}</code></p>
+                                <p><strong>Campi trovati (${found.length}/${expectedFields.length}):</strong> ${found.join(', ')}</p>
+                                ${missing.length > 0 ? `<p style="color: var(--warning);">⚠️ Campi mancanti: ${missing.join(', ')}</p>` : ''}
+                                <p><strong>Tutti i campi:</strong> ${fields.join(', ')}</p>
+                            `, true);
+                        }
+                        return;
+                    } else {
+                        log('warn', `   ❌ ${response.status} per "${p.name}"`);
+                    }
+                } catch (e) {
+                    log('warn', `   ❌ Errore: ${e.message}`);
+                }
+            }
+            
+            log('error', '❌ Nessuna tabella inventory trovata!');
+            showResult('error', 'Tabella non trovata', 'Verifica il nome della tabella nella base Airtable');
+        }
+        
+        async function testPhotoCandidates() {
+            const base = getSelectedBaseId();
+            const tableId = 'tbl7ogfLnHsVfFdzb';
+            
+            log('info', `📷 Testing PHOTO_CANDIDATES (${tableId}) in base: ${base}`);
+            
+            try {
+                const url = `https://api.airtable.com/v0/${base}/${tableId}?maxRecords=3`;
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!response.ok) {
+                    const err = await response.json();
+                    log('error', `❌ ${response.status}: ${err.error?.message}`);
+                    showResult('error', 'PHOTO_CANDIDATES non accessibile', err.error?.message);
+                    return;
+                }
+                
+                const data = await response.json();
+                log('success', `✅ PHOTO_CANDIDATES OK - ${data.records?.length || 0} record campione`);
+                
+                if (data.records?.length > 0) {
+                    const fields = Object.keys(data.records[0].fields);
+                    log('data', `   Campi: ${fields.join(', ')}`);
+                    
+                    showResult('success', 'PHOTO_CANDIDATES OK', `
+                        <p><strong>Table ID:</strong> <code>${tableId}</code></p>
+                        <p><strong>Campi:</strong> ${fields.join(', ')}</p>
+                        <p><strong>Sample SKU:</strong> ${data.records[0].fields.SKU || 'N/A'}</p>
+                    `, true);
+                }
+                
+            } catch (error) {
+                log('error', `❌ Errore: ${error.message}`);
+            }
+        }
+        
+        async function testAllFields() {
+            const base = getSelectedBaseId();
+            log('info', `🔍 Analisi completa campi per base: ${base}`);
+            
+            await testOldInventory();
+            await testPhotoCandidates();
+        }
+        
+        async function runFullDiagnostic() {
+            log('info', '═══════════════════════════════════════');
+            log('info', '🚀 AVVIO DIAGNOSTICA COMPLETA');
+            log('info', '═══════════════════════════════════════');
+            
+            const results = {
+                token: false,
+                base: false,
+                oldInventory: false,
+                photoCandidates: false,
+                requiredFields: []
+            };
+            
+            // 1. Token check
+            log('info', '\n📋 Step 1: Verifica Token');
+            if (token && token.length > 10) {
+                log('success', '✅ Token presente');
+                results.token = true;
+            } else {
+                log('error', '❌ Token mancante o troppo corto');
+                showResult('error', 'Diagnostica fallita', 'Inserisci un token valido prima di procedere');
+                return;
+            }
+            
+            // 2. Base connection
+            log('info', '\n📋 Step 2: Connessione Base');
+            const base = getSelectedBaseId();
+            try {
+                await testBaseConnection();
+                results.base = true;
+            } catch (e) {
+                log('error', `❌ Connessione fallita: ${e.message}`);
+            }
+            
+            // 3. Table tests
+            log('info', '\n📋 Step 3: Test Tabelle');
+            
+            // Test OLD_INVENTORY with different names
+            const inventoryTests = ['OLD_INVENTORY', 'INVENTARIO', 'Inventario'];
+            for (const tableName of inventoryTests) {
+                try {
+                    const url = `https://api.airtable.com/v0/${base}/${encodeURIComponent(tableName)}?maxRecords=1`;
+                    const response = await fetch(url, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        log('success', `✅ Tabella "${tableName}" trovata`);
+                        results.oldInventory = { name: tableName, sample: data.records?.[0] };
+                        
+                        if (data.records?.[0]) {
+                            results.requiredFields = Object.keys(data.records[0].fields);
+                        }
+                        break;
+                    }
+                } catch (e) { }
+            }
+            
+            if (!results.oldInventory) {
+                log('error', '❌ Nessuna tabella inventory trovata');
+            }
+            
+            // 4. Summary
+            log('info', '\n═══════════════════════════════════════');
+            log('info', '📊 RIEPILOGO DIAGNOSTICA');
+            log('info', '═══════════════════════════════════════');
+            log(results.token ? 'success' : 'error', `Token: ${results.token ? '✅' : '❌'}`);
+            log(results.base ? 'success' : 'error', `Connessione Base: ${results.base ? '✅' : '❌'}`);
+            log(results.oldInventory ? 'success' : 'error', `Inventory Table: ${results.oldInventory ? '✅ ' + results.oldInventory.name : '❌'}`);
+            
+            if (results.requiredFields.length > 0) {
+                log('data', `\nCampi disponibili:\n${results.requiredFields.join('\n')}`);
+            }
+            
+            // Build summary HTML
+            let summaryHtml = '<table>';
+            summaryHtml += `<tr><td>Token</td><td>${results.token ? '<span class="status-badge status-ok">✓ OK</span>' : '<span class="status-badge status-error">✗ Mancante</span>'}</td></tr>`;
+            summaryHtml += `<tr><td>Base ID</td><td><code>${base}</code></td></tr>`;
+            summaryHtml += `<tr><td>Inventory Table</td><td>${results.oldInventory ? '<span class="status-badge status-ok">✓ ' + results.oldInventory.name + '</span>' : '<span class="status-badge status-error">✗ Non trovata</span>'}</td></tr>`;
+            summaryHtml += '</table>';
+            
+            if (results.requiredFields.length > 0) {
+                summaryHtml += '<h3>Campi disponibili:</h3><ul>';
+                results.requiredFields.forEach(f => {
+                    const isRequired = ['SKU', 'Category', 'Brand', 'Photo_Audit_Status'].includes(f);
+                    summaryHtml += `<li>${isRequired ? '⭐ ' : ''}${f}</li>`;
+                });
+                summaryHtml += '</ul>';
+            }
+            
+            showResult(
+                results.token && results.oldInventory ? 'success' : 'error',
+                'Diagnostica Completata',
+                summaryHtml,
+                true
+            );
+        }
+        
+        async function runManualQuery() {
+            const base = getSelectedBaseId();
+            const tableId = document.getElementById('queryTableId').value.trim();
+            const filter = document.getElementById('queryFilter').value.trim();
+            
+            if (!tableId) {
+                log('error', '❌ Inserisci un Table ID');
+                return;
+            }
+            
+            log('info', `🔍 Query manuale: ${base}/${tableId}`);
+            if (filter) log('info', `   Filter: ${filter}`);
+            
+            try {
+                let url = `https://api.airtable.com/v0/${base}/${tableId}?maxRecords=10`;
+                if (filter) {
+                    url += `&filterByFormula=${encodeURIComponent(filter)}`;
+                }
+                
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    log('error', `❌ ${response.status}: ${data.error?.message}`);
+                    showResult('error', 'Query fallita', data.error?.message);
+                    return;
+                }
+                
+                log('success', `✅ Query OK - ${data.records?.length || 0} record`);
+                
+                let html = `<p><strong>Records:</strong> ${data.records?.length || 0}</p>`;
+                
+                if (data.records?.length > 0) {
+                    const fields = Object.keys(data.records[0].fields);
+                    html += `<p><strong>Campi:</strong> ${fields.join(', ')}</p>`;
+                    html += '<h3>Sample Data:</h3><pre style="background: #000; padding: 1rem; overflow-x: auto;">' + 
+                            JSON.stringify(data.records.slice(0, 3), null, 2) + '</pre>';
+                }
+                
+                showResult('success', 'Query completata', html, true);
+                
+            } catch (error) {
+                log('error', `❌ Errore: ${error.message}`);
+            }
+        }
+        
         // ============================================
         // UI HELPERS
         // ============================================
-        function showLoading(show) {
-            document.getElementById('loadingState').style.display = show ? 'block' : 'none';
-            if (show) {
-                document.getElementById('productContainer').innerHTML = '';
-                document.getElementById('emptyState').style.display = 'none';
-            }
+        function log(type, message) {
+            const panel = document.getElementById('logPanel');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            panel.appendChild(entry);
+            panel.scrollTop = panel.scrollHeight;
         }
-
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = 'toast ' + type + ' show';
+        
+        function clearLog() {
+            document.getElementById('logPanel').innerHTML = '';
+            log('info', '🗑️ Log pulito');
+        }
+        
+        function showResult(type, title, content, isHtml = false) {
+            const panel = document.getElementById('resultsPanel');
+            const color = type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--accent)' : 'var(--warning)';
             
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            panel.innerHTML = `
+                <div style="border-left: 4px solid ${color}; padding-left: 1rem;">
+                    <h3 style="color: ${color}; margin-top: 0;">${title}</h3>
+                    ${isHtml ? content : `<p>${content}</p>`}
+                </div>
+            `;
         }
     </script>
 </body>
